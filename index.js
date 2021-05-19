@@ -1,20 +1,21 @@
 const express = require("express");
 const chokidar = require("chokidar");
+require('dotenv').config();
 
 const app = express();
 app.use((req, res, next) => {
-    const appCallback = require("/home/diman/PhpstormProjects/react/dist.server.js").default;
+    const appCallback = require(process.env.WATCH_FILE).default;
     appCallback(req, res, next);
 });
 
-const watcher = chokidar.watch('/home/diman/PhpstormProjects/react/dist.server.js');
+const watcher = chokidar.watch(process.env.WATCH_FILE);
 watcher.on('ready', function () {
     watcher.on('all', function () {
         console.log('HOT RELOAD!');
-        delete require.cache['/home/diman/PhpstormProjects/react/dist.server.js'];
+        delete require.cache[process.env.WATCH_FILE];
     });
 });
 
-app.listen(7777, () => {
-    console.log("Application is started on localhost:7777");
+app.listen(process.env.PORT, () => {
+    console.log("Application is started on localhost:" + process.env.PORT);
 });
